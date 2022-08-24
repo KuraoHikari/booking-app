@@ -32,6 +32,17 @@ app.use('/users', usersRoute);
 app.use('/hotels', hotelsRoute);
 app.use('/rooms', roomsRoute);
 
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || 'something went wrong';
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+  });
+});
+
 app.listen(8800, () => {
   connect();
   console.log('connect to port' + '8800');
