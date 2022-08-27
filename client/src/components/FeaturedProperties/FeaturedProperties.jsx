@@ -1,48 +1,30 @@
 import React from 'react';
+import useFetch from '../../hooks/useFetch.js';
 import './FeaturedProperties.css';
 const FeaturedProperties = () => {
+  const { data, loading, error } = useFetch('http://localhost:8800/hotels?featured=false&limit=4');
   return (
     <div className="fp">
-      <div className="fpItem">
-        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/238878317.jpg?k=d72cec49ee8ee88f678c7356417a1f2974952250e035920a4503b45ff7a30217&o=&hp=1" alt="" className="fpImg" />
-        <span className="fpName">Aparthotel Stare Miasto</span>
-        <span className="fpCity">Ubud</span>
-        <span className="fpPrice">Starting from $120</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excelence</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/238878317.jpg?k=d72cec49ee8ee88f678c7356417a1f2974952250e035920a4503b45ff7a30217&o=&hp=1" alt="" className="fpImg" />
-        <span className="fpName">Aparthotel Stare Miasto</span>
-        <span className="fpCity">Ubud</span>
-        <span className="fpPrice">Starting from $120</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excelence</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/238878317.jpg?k=d72cec49ee8ee88f678c7356417a1f2974952250e035920a4503b45ff7a30217&o=&hp=1" alt="" className="fpImg" />
-        <span className="fpName">Aparthotel Stare Miasto</span>
-        <span className="fpCity">Ubud</span>
-        <span className="fpPrice">Starting from $120</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excelence</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/238878317.jpg?k=d72cec49ee8ee88f678c7356417a1f2974952250e035920a4503b45ff7a30217&o=&hp=1" alt="" className="fpImg" />
-        <span className="fpName">Aparthotel Stare Miasto</span>
-        <span className="fpCity">Ubud</span>
-        <span className="fpPrice">Starting from $120</span>
-        <div className="fpRating">
-          <button>8.9</button>
-          <span>Excelence</span>
-        </div>
-      </div>
+      {loading ? (
+        'loading'
+      ) : (
+        <>
+          {data.map((item) => (
+            <div className="fpItem" key={item._id}>
+              <img src={item.photos[0]} alt="" className="fpImg" />
+              <span className="fpName">{item.name}</span>
+              <span className="fpCity">{item.city}</span>
+              <span className="fpPrice">Starting from ${item.cheapestPrice}</span>
+              {item.rating && (
+                <div className="fpRating">
+                  <button>{item.rating}</button>
+                  <span>Excelence</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };
