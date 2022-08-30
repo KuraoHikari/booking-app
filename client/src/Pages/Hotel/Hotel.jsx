@@ -7,11 +7,14 @@ import MailList from '../../components/MailList/MailList';
 import Footer from '../../components/Footer/Footer';
 import './Hotel.css';
 import useFetch from '../../hooks/useFetch';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../Contexts/SearchContext';
+import { AuthContext } from '../../Contexts/AuthContext';
 const Hotel = () => {
   const location = useLocation();
   const path = location.pathname.split('/')[2];
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const { data, loading, error } = useFetch(`http://localhost:8800/hotels/find/${path}`);
   const { dates, options } = useContext(SearchContext);
@@ -25,6 +28,7 @@ const Hotel = () => {
   console.log(dates, 'ASA;S,A;,S');
   const [slideNumber, setSlideNumber] = useState(0);
   const [openSlider, setOpenSlider] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const handleOpen = (i) => {
     setOpenSlider(true);
     setSlideNumber(i);
@@ -60,6 +64,13 @@ const Hotel = () => {
       src: 'https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707389.jpg?k=52156673f9eb6d5d99d3eed9386491a0465ce6f3b995f005ac71abc192dd5827&o=&hp=1',
     },
   ];
+  const handleClick = () => {
+    if (user) {
+      setOpenModal(true);
+    } else {
+      navigate('/login');
+    }
+  };
   return (
     <div>
       <Navbar />
@@ -79,7 +90,9 @@ const Hotel = () => {
             </div>
           )}
           <div className="hotelWrapper">
-            <button className="bookNow">Reserve or Book Now!</button>
+            <button className="bookNow" onClick={handleClick}>
+              Reserve or Book Now!
+            </button>
             <h1 className="hotelTitle">{data.name}</h1>
             <div className="hotelAddress">
               <FontAwesomeIcon icon={faMapLocationDot} />
