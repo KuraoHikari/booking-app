@@ -10,6 +10,7 @@ import useFetch from '../../hooks/useFetch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../Contexts/SearchContext';
 import { AuthContext } from '../../Contexts/AuthContext';
+import Reservation from '../../components/Reservation/Reservation';
 const Hotel = () => {
   const location = useLocation();
   const path = location.pathname.split('/')[2];
@@ -118,7 +119,7 @@ const Hotel = () => {
                 <h2>
                   <b>${days * data.cheapestPrice * options.rooms}</b> ({days} nights)
                 </h2>
-                <button>Reserve or Book Now!</button>
+                <button onClick={handleClick}>Reserve or Book Now!</button>
               </div>
             </div>
           </div>
@@ -126,6 +127,7 @@ const Hotel = () => {
           <Footer />
         </div>
       )}
+      {openModal && <Reservation setOpen={setOpenModal} hotelId={path} />}
     </div>
   );
 };
