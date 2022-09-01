@@ -1,15 +1,26 @@
 import './datatable.scss';
 import { DataGrid } from '@mui/x-data-grid';
 import { userColumns, userRows } from '../../datatablesource';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import useFetch from '../../hooks/useFetch';
+import axios from 'axios';
 
-const Datatable = () => {
-  // const [data, setData] = useState(userRows);
-  const { data, loading, error } = useFetch('http://localhost:8800/users');
+const Datatable = ({ columns }) => {
+  const location = useLocation();
+  const path = location.pathname.split('/')[1];
+  const [list, setList] = useState([]);
+  const { data, loading, error } = useFetch(`http://localhost:8800/${path}`);
+  useEffect(() => {
+    setList(JSON.parse(JSON.stringify(data)));
+  }, [data]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8800/${path}/${id}`);
+      setList(list.filter((item) => item._id !== id));
+    } catch (error) {}
+
     // setData(data.filter((item) => item.id !== id));
   };
 
@@ -24,7 +35,7 @@ const Datatable = () => {
             <Link to="/users/test" style={{ textDecoration: 'none' }}>
               <div className="viewButton">View</div>
             </Link>
-            <div className="deleteButton" onClick={() => handleDelete(params.row.id)}>
+            <div className="deleteButton" onClick={() => handleDelete(params.row._id)}>
               Delete
             </div>
           </div>
@@ -40,7 +51,7 @@ const Datatable = () => {
           Add New
         </Link>
       </div>
-      <DataGrid className="datagrid" rows={data} columns={userColumns.concat(actionColumn)} pageSize={9} rowsPerPageOptions={[9]} checkboxSelection getRowId={(row) => row._id} />
+      <DataGrid className="datagrid" rows={list} columns={columns.concat(actionColumn)} pageSize={9} rowsPerPageOptions={[9]} checkboxSelection getRowId={(row) => row._id} />
     </div>
   );
 };
